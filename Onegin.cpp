@@ -22,7 +22,8 @@ char *InitText () {
 		long len = lenOfFile (txtFile);
 		printf ("Total len = %li\n", len);
 		char *str = (char *) calloc (len, sizeof (char));
-		//int frRes = fread (str, sizeof (char), len, txtFile);
+		//int frRes = 
+		fread (str, sizeof (char), len, txtFile);
 		//printf ("frRes = %i\n", frRes);
 		//printf ("String = %d\n", *str);		//если использовать функции, то str можно вывести только puts (str)?
 		fclose (txtFile);
@@ -73,12 +74,12 @@ void TestOutStrings (int n_strings, struct String *strings) {
 }
 
 
-void sotrStrings (struct String *strings, int n_strings) {		// пузырьком
+void SortStrings (struct String *strings, int n_strings) {		// пузырьком
 	assert (strings != NULL);
 
 	for (; n_strings > 1; n_strings--) {
 		for (int i = 0; i < n_strings - 1; i++) {
-			if (strings[i].len > strings[i + 1].len) {
+			if (strings[i].len < strings[i + 1].len) {
 				int tempLen = 0;
 				char *tempData = 0;
 				tempLen = strings[i].len;
@@ -93,7 +94,40 @@ void sotrStrings (struct String *strings, int n_strings) {		// пузырько�
 }
 
 
-void cleanMemory () {
-	free (str);
-	free (strings);
+void PrintSortTextConsole (struct String *strings, int n_strings) {
+	assert (strings != NULL);
+
+	for (int i = 0; i < n_strings; i++) {
+		char *pos = strings[i].data;
+		while (*pos != '\n' && *pos != '\0') {
+			putchar (*pos);
+			pos++;
+		}
+		if (i != n_strings - 1) {
+			putchar ('\n');
+		}
+	}
+	putchar ('\0');
+}
+
+void PrintSortTextFile (struct String *strings, int n_strings) {
+	assert (strings != NULL);
+
+	FILE *wFile = NULL;
+	if ((wFile = fopen ("result.txt", "wb")) != NULL) {
+		for (int i = 0; i < n_strings; i++) {
+			char *pos = strings[i].data;
+			while (*pos != '\n' && *pos != '\0') {
+				putc (*pos, wFile);
+				pos++;
+			}
+			if (i != n_strings - 1) {
+				putc ('\n', wFile);
+			}
+		}
+		putc ('\0', wFile);
+	}
+	else {
+		printf ("Error in Writing");
+	}
 }

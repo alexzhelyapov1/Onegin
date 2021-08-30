@@ -14,8 +14,11 @@ int main () { // assert
 	struct String *strings = (struct String *) calloc (n_strings, sizeof (struct String));
 	FillStruct (str, strings, n_strings);
 	TestOutStrings (n_strings, strings);
+	SortStrings (strings, n_strings);
+	PrintSortTextConsole (strings, n_strings);
+	PrintSortTextFile (strings, n_strings);
 
-
-	cleanMemory ();
+	free (str);
+	free (strings);
 	return 0;
 }
