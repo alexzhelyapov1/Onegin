@@ -14,5 +14,8 @@ int main () { // assert
 	struct String *strings = (struct String *) calloc (n_strings, sizeof (struct String));
 	FillStruct (str, strings, n_strings);
 	TestOutStrings (n_strings, strings);
+
+
+	cleanMemory ();
 	return 0;
 }

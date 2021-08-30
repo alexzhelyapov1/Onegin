@@ -20,5 +20,7 @@ int N_Str (char *s);
 long lenOfFile (FILE *file);
 struct String *FillStruct (char *str, struct String *strings);
 void TestOutStrings (int n_strings, struct String *strings);
+void sotrStrings (struct String *strings, int n_strings);
+void cleanMemory ();
 
 #endif
