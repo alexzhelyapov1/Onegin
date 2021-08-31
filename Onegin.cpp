@@ -74,7 +74,7 @@ void TestOutStrings (int n_strings, struct String *strings) {
 }
 
 
-void SortStrings (struct String *strings, int n_strings) {		// пузырьком
+void SortStringsLen (struct String *strings, int n_strings) {		// пузырьком
 	assert (strings != NULL);
 
 	for (; n_strings > 1; n_strings--) {
@@ -129,5 +129,28 @@ void PrintSortTextFile (struct String *strings, int n_strings) {
 	}
 	else {
 		printf ("Error in Writing");
+	}
+}
+
+int SortStringsAlphabet (strings, ) {
+	assert (strings != NULL);
+
+	bool needMoreDeepSort = false;
+	for (; n_strings > 1; n_strings--) {
+		for (int i = 0; i < n_strings - 1; i++) {
+			if (strings[i].len < strings[i + 1].len) {
+				int tempLen = 0;
+				char *tempData = 0;
+				tempLen = strings[i].len;
+				tempData = strings[i].data;
+				strings[i].len = strings[i + 1].len;
+				strings[i].data = strings[i + 1].data;
+				strings[i + 1].len = tempLen;
+				strings[i + 1].data = tempData;
+			}
+			if (strings[i].len == strings[i+1].len) {
+				needMoreDeepSort = true;
+			}
+		}
 	}
 }

@@ -20,8 +20,9 @@ int N_Str (char *s);
 long lenOfFile (FILE *file);
 struct String *FillStruct (char *str, struct String *strings);
 void TestOutStrings (int n_strings, struct String *strings);
-void SortStrings (struct String *strings, int n_strings);
+void SortStringsLen (struct String *strings, int n_strings);
 void PrintSortTextConsole (struct String *strings, int n_strings);
 void PrintSortTextFile (struct String *strings, int n_strings);
+
 
 #endif
