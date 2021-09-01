@@ -23,6 +23,9 @@ void TestOutStrings (int n_strings, struct String *strings);
 void SortStringsLen (struct String *strings, int n_strings);
 void PrintSortTextConsole (struct String *strings, int n_strings);
 void PrintSortTextFile (struct String *strings, int n_strings);
+void SortStringsAlphabet (struct String *strings, int n_strings);
+void SwapStrings (struct String *strings, int i);
+void CompareStrings (struct String *strings, int first);
 
 
 #endif

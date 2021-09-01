@@ -14,12 +14,12 @@ int main () { // assert
 	struct String *strings = (struct String *) calloc (n_strings, sizeof (struct String));
 	FillStruct (str, strings, n_strings);
 	TestOutStrings (n_strings, strings);
-	SortStringsLen (strings, n_strings);
+	//SortStringsLen (strings, n_strings);
+	SortStringsAlphabet (strings, n_strings);
+
 	PrintSortTextConsole (strings, n_strings);
 	PrintSortTextFile (strings, n_strings);
 	
-	while
-	SortStringsAlphabet (strings, )
 
 	free (str);
 	free (strings);

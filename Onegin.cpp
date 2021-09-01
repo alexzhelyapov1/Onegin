@@ -35,6 +35,7 @@ char *InitText () {
 	}
 }
 
+
 struct String *FillStruct (char *str, struct String *strings, int n_strings) {
 	assert (str != NULL);
 	assert (strings != NULL);
@@ -51,6 +52,7 @@ struct String *FillStruct (char *str, struct String *strings, int n_strings) {
 
 	//printf ("1 - %i, 2 - %i\n", strchr (str, '\0'), strings[stringNumber].data);
 	strings[stringNumber].len = strchr (str, '\0') - strings[stringNumber].data;
+	*strchr (str, '\0') = '\n'; // теперь у нас все строки без завершающего нуля
 	return strings;
 }
 
@@ -80,14 +82,7 @@ void SortStringsLen (struct String *strings, int n_strings) {		// пузырьк
 	for (; n_strings > 1; n_strings--) {
 		for (int i = 0; i < n_strings - 1; i++) {
 			if (strings[i].len < strings[i + 1].len) {
-				int tempLen = 0;
-				char *tempData = 0;
-				tempLen = strings[i].len;
-				tempData = strings[i].data;
-				strings[i].len = strings[i + 1].len;
-				strings[i].data = strings[i + 1].data;
-				strings[i + 1].len = tempLen;
-				strings[i + 1].data = tempData;
+				SwapStrings (strings, i);
 			}
 		}
 	}
@@ -109,6 +104,7 @@ void PrintSortTextConsole (struct String *strings, int n_strings) {
 	}
 	putchar ('\0');
 }
+
 
 void PrintSortTextFile (struct String *strings, int n_strings) {
 	assert (strings != NULL);
@@ -132,25 +128,70 @@ void PrintSortTextFile (struct String *strings, int n_strings) {
 	}
 }
 
-int SortStringsAlphabet (strings, ) {
+
+void SortStringsAlphabet (struct String *strings, int n_strings) {
 	assert (strings != NULL);
 
-	bool needMoreDeepSort = false;
 	for (; n_strings > 1; n_strings--) {
 		for (int i = 0; i < n_strings - 1; i++) {
-			if (strings[i].len < strings[i + 1].len) {
-				int tempLen = 0;
-				char *tempData = 0;
-				tempLen = strings[i].len;
-				tempData = strings[i].data;
-				strings[i].len = strings[i + 1].len;
-				strings[i].data = strings[i + 1].data;
-				strings[i + 1].len = tempLen;
-				strings[i + 1].data = tempData;
-			}
-			if (strings[i].len == strings[i+1].len) {
-				needMoreDeepSort = true;
-			}
+			CompareStrings (strings, i);
 		}
+	}
+}
+
+
+void SwapStrings (struct String *strings, int i) {
+	int tempLen = 0;
+	char *tempData = 0;
+	tempLen = strings[i].len;
+	tempData = strings[i].data;
+	strings[i].len = strings[i + 1].len;
+	strings[i].data = strings[i + 1].data;
+	strings[i + 1].len = tempLen;
+	strings[i + 1].data = tempData;	
+}
+
+
+// 	for (; n_strings > 1; n_strings--) {
+// 		for (int i = 0; i < n_strings - 1; i++) {
+// 			if (strings[i].len < strings[i + 1].len) {
+// 				int tempLen = 0;
+// 				char *tempData = 0;
+// 				tempLen = strings[i].len;
+// 				tempData = strings[i].data;
+// 				strings[i].len = strings[i + 1].len;
+// 				strings[i].data = strings[i + 1].data;
+// 				strings[i + 1].len = tempLen;
+// 				strings[i + 1].data = tempData;
+// 			}
+// 			if (strings[i].len == strings[i+1].len) {
+// 				needMoreDeepSort = true;
+// 			}
+// 		}
+// 	}
+// }
+
+
+void CompareStrings (struct String *strings, int first) {
+	int i = 0;
+	int second = first + 1;
+	char *fCh = strings[first].data;
+	char *sCh = strings[second].data;
+
+	while (*(fCh + i) == *(sCh + i) && *(fCh + i) != '\n' && *(sCh + i) != '\n') {
+		if (*(strings[first].data + i) == '\n') {
+			break;
+		}
+		else {
+			i++;
+		}
+
+		//(*(strings[first].data + i) == '\n') ? break : i++;
+	}
+	if (*fCh + i == '\n') { 		//более короткие строки будут падать вниз
+		SwapStrings (strings, first);
+	}
+	else if ((*strings[first].data + i) >= (*strings[second].data + i)) {
+		SwapStrings (strings, first);
 	}
 }
