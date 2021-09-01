@@ -21,9 +21,9 @@ char *InitText () {
 	if ((txtFile = fopen ("text.txt", "rb")) != NULL) {
 		long len = lenOfFile (txtFile);
 		printf ("Total len = %li\n", len);
-		char *str = (char *) calloc (len, sizeof (char));
+		int *str = (char *) calloc (len, sizeof (char));
 		//int frRes = 
-		fread (str, sizeof (char), len, txtFile);
+		fread (str, sizeof (int), len, txtFile);
 		//printf ("frRes = %i\n", frRes);
 		//printf ("String = %d\n", *str);		//если использовать функции, то str можно вывести только puts (str)?
 		fclose (txtFile);

@@ -6,7 +6,9 @@
 #include <filesystem>
 #include <string.h>
 #include <assert.h>
+#include <locale.h>
 
+setlocale(LC_ALL, "Russian");
 
 struct String {
 	char* data;		//ссылка на 1 элемент строки
@@ -26,6 +28,7 @@ void PrintSortTextFile (struct String *strings, int n_strings);
 void SortStringsAlphabet (struct String *strings, int n_strings);
 void SwapStrings (struct String *strings, int i);
 void CompareStrings (struct String *strings, int first);
+
 
 
 #endif
