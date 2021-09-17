@@ -6,12 +6,10 @@
 #include <filesystem>
 #include <string.h>
 #include <assert.h>
-#include <locale.h>
 
-setlocale(LC_ALL, "Russian");
 
 struct String {
-	char* data;		//ссылка на 1 элемент строки
+	char *data;		//ссылка на 1 элемент строки
 	int len;
 };
 
@@ -19,16 +17,15 @@ struct String {
 char *InitText ();
 struct String *FillStruct (char *str, struct String *strings, int n_strings);
 int N_Str (char *s);
-long lenOfFile (FILE *file);
+long LenOfFile (FILE *file);
 struct String *FillStruct (char *str, struct String *strings);
 void TestOutStrings (int n_strings, struct String *strings);
 void SortStringsLen (struct String *strings, int n_strings);
 void PrintSortTextConsole (struct String *strings, int n_strings);
 void PrintSortTextFile (struct String *strings, int n_strings);
 void SortStringsAlphabet (struct String *strings, int n_strings);
-void SwapStrings (struct String *strings, int i);
-void CompareStrings (struct String *strings, int first);
-
+void SwapStringsInStruct (struct String *strings, int i);
+int CompareStrings (char *string1, char *string2);
 
 
 #endif

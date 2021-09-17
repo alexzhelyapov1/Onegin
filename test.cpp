@@ -6,9 +6,9 @@
 
 
 int main () {
-	char s[] = {"0asdk qw"};
+	char s[];
+	scanf ("%s", s);
 	printf ("%s", s);
-	printf ("%i", s[0]);
 
 	// char *str = (char *) calloc (len, sizeof (char)); // нужно на \0 доп байт?
 	// fopen (str, sizeof (char), len, txtFile);
