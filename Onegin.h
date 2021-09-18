@@ -13,6 +13,13 @@ struct String {
 	int len;
 };
 
+// struct Bufer {
+// 	struct String *strings;
+// 	int n_strings;
+// 	char *endFile;
+
+// }
+
 
 char *InitText ();
 struct String *FillStruct (char *str, struct String *strings, int n_strings);
@@ -26,6 +33,10 @@ void PrintSortTextFile (struct String *strings, int n_strings);
 void SortStringsAlphabet (struct String *strings, int n_strings);
 void SwapStringsInStruct (struct String *strings, int i);
 int CompareStrings (char *string1, char *string2);
+int CompareStringsReverse (char *string1, int len1, char *string2, int len2);
+void SortStringsAlphabetReverse (struct String *strings, int n_strings);
+void TestPrintStr (char *s, char *endFile);
+char *RemoveN (char *str);
 
 
 #endif

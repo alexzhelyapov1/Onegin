@@ -7,8 +7,9 @@
 
 int main () {
 	char s[];
-	scanf ("%s", s);
-	printf ("%s", s);
+	char a = '1';
+	if ((a = getchar ()) == 'q')
+		printf ("%s", s);
 
 	// char *str = (char *) calloc (len, sizeof (char)); // нужно на \0 доп байт?
 	// fopen (str, sizeof (char), len, txtFile);
