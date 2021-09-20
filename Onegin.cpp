@@ -23,7 +23,7 @@ char *InitText (struct Bufer *bufer) {
 		long len = LenOfFile (txtFile);
 		bufer->len = len;
 		
-		printf ("Total len = %li\n", len);
+		//printf ("Total len = %li\n", len);
 		
 		char *str = (char *) calloc (len, sizeof (char));
 		fread (str, sizeof (char), len, txtFile);
@@ -57,7 +57,7 @@ void N_Str (struct Bufer *bufer) {
 		bufer->n_strings++;
 	}
 	bufer->n_strings++;
-	printf ("Number of strings = %d\n", bufer->n_strings);
+	//printf ("Number of strings = %d\n", bufer->n_strings);
 }
 
 
@@ -72,8 +72,8 @@ struct String *FillStruct (struct Bufer *bufer) {
 	char *i = bufer->str - 1;
 	while (i != bufer->endFile && (i = strchr (i + 1, '\0')) != NULL) {
 		bufer->strings[stringNumber].len = i - bufer->strings[stringNumber].data;		//случчай когда \n\0 получается строка длины 0
-		printf ("FillStruct len = %d, endFile = %p, i = %p, endchar = %d, %d\n",
-				bufer->strings[stringNumber].len, bufer->endFile, i, *(i - 1), '\r');
+		//printf ("FillStruct len = %d, endFile = %p, i = %p, endchar = %d, %d\n",
+				//bufer->strings[stringNumber].len, bufer->endFile, i, *(i - 1), '\r');
 		stringNumber++;
 		*i = '\0';
 		bufer->strings[stringNumber].data = i + 1;
@@ -84,7 +84,7 @@ struct String *FillStruct (struct Bufer *bufer) {
 
 void RemoveN (struct Bufer *bufer) {
 	char *i = bufer->str;	
-	printf("\nEeeend = %p\n", strchr (i, '\0'));
+	//printf("\nEeeend = %p\n", strchr (i, '\0'));
 	bufer->endFile = strchr (i, '\0');
 	while ((i = strchr (i + 1, '\n')) != NULL) {
 		*i = '\0';
@@ -115,7 +115,7 @@ void TestOutStrings (struct Bufer *bufer) {
 	assert (bufer->strings != NULL);
 
 	for (int i = 0; i < bufer->n_strings; i++) {
-		printf ("Str #%i, len = %i, firstElement = %c\n", i + 1, bufer->strings[i].len, *bufer->strings[i].data);
+		//printf ("Str #%i, len = %i, firstElement = %c\n", i + 1, bufer->strings[i].len, *bufer->strings[i].data);
 	}
 }
 
@@ -140,6 +140,7 @@ void PrintSortTextConsole (struct Bufer *bufer) {
 	for (int i = 0; i < bufer->n_strings; i++) {
 		printf ("%s\n", bufer->strings[i].data);
 	}
+	printf ("-------------\n");
 }
 
 
@@ -175,10 +176,11 @@ void SortStringsAlphabet (struct Bufer *bufer) {
 void SortStringsAlphabetReverse (struct Bufer *bufer) {
 	assert (bufer->strings != NULL);
 
-	for (int k = 0; k < bufer->n_strings - 1; k++) {
+	for (int k = 0; k < bufer->n_strings; k++) {
 		for (int i = 0; i < bufer->n_strings - 1; i++) {
-			printf ("---%d---total = %d\n", i, bufer->n_strings);
-			printf ("xxx 1 = %c, 2 = %c\n", *bufer->strings[i].data, *bufer->strings[i + 1].data);
+			// printf ("---%d---total = %d\n", i, bufer->n_strings);
+			// printf ("xxx 1 = %c, 2 = %c\n", *bufer->strings[i].data, *bufer->strings[i + 1].data);
+			PrintSortTextConsole (bufer);
 			if (CompareStringsReverse (bufer->strings[i].data, bufer->strings[i].len, bufer->strings[i + 1].data,
 				 bufer->strings[i + 1].len) > 0) {
 
@@ -214,11 +216,11 @@ int CompareStringsReverse (char *string1, int len1, char *string2, int len2) {
 	len1--;
 	len2--;
 	while (i < len1 && i < len2 && string1[len1 - 1 - i] == string2[len2 - 1 - i]){
-		printf ("InWhile 1 = %c, 2 = %c, sr1 = %c, sr2 = %c, i = %d, len1 = %d, len2 = %d\n", string1[0], string2[0], string1[len1 - 1 - i], string2[len2 - 1 - i], i, len1, len2);
+		// printf ("InWhile 1 = %c, 2 = %c, sr1 = %c, sr2 = %c, i = %d, len1 = %d, len2 = %d\n", string1[0], string2[0], string1[len1 - 1 - i], string2[len2 - 1 - i], i, len1, len2);
 		i++;
 	}
-	printf ("1 = %c, 2 = %c, sr1 = %c, sr2 = %c, i = %d, len1 = %d, len2 = %d\n", string1[0], string2[0], string1[len1 - 1 - i], string2[len2 - 1 - i], i, len1, len2);
-	printf ("---\n");
+	// printf ("1 = %c, 2 = %c, sr1 = %c, sr2 = %c, i = %d, len1 = %d, len2 = %d\n", string1[0], string2[0], string1[len1 - 1 - i], string2[len2 - 1 - i], i, len1, len2);
+	// printf ("---\n");
 	return string1[len1 - 1 - i] - string2[len2 - 1 - i];
 }
 
