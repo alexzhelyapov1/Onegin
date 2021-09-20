@@ -177,11 +177,12 @@ void SortStringsAlphabetReverse (struct Bufer *bufer) {
 
 	for (int k = 0; k < bufer->n_strings - 1; k++) {
 		for (int i = 0; i < bufer->n_strings - 1; i++) {
+			printf ("---%d---total = %d\n", i, bufer->n_strings);
+			printf ("xxx 1 = %c, 2 = %c\n", *bufer->strings[i].data, *bufer->strings[i + 1].data);
 			if (CompareStringsReverse (bufer->strings[i].data, bufer->strings[i].len, bufer->strings[i + 1].data,
 				 bufer->strings[i + 1].len) > 0) {
 
 				SwapStringsInStruct (bufer->strings, i);
-			printf ("---%d---total = %d\n", i, bufer->n_strings);
 			}
 		}
 	}
