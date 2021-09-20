@@ -7,7 +7,7 @@ int main () { // assert
 	// сортируем структуру
 	// выводим в конечный файл по структуре по ссылкам
 	struct Bufer *bufer = InitBufer();
-	TestOutStrings (bufer);
+	//TestOutStrings (bufer);
 	//SortStringsLen (strings, n_strings);
 	//SortStringsAlphabet (strings, n_strings);
 	SortStringsAlphabetReverse (bufer);

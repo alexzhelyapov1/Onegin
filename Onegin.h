@@ -28,7 +28,6 @@ struct String *FillStruct (struct Bufer *bufer);
 void N_Str (struct Bufer *bufer);
 long LenOfFile (FILE *file);
 
-void TestOutStrings (struct Bufer *bufer);
 void SortStringsLen (struct Bufer *bufer);
 void PrintSortTextConsole (struct Bufer *bufer);
 void PrintSortTextFile (struct Bufer *bufer);
@@ -37,9 +36,7 @@ void SwapStringsInStruct (struct String *strings, int i);
 int CompareStrings (char *string1, char *string2);
 int CompareStringsReverse (char *string1, int len1, char *string2, int len2);
 void SortStringsAlphabetReverse (struct Bufer *bufer);
-void TestPrintStr (char *s, char *endFile);
-void RemoveN (struct Bufer *bufer);
 void RemoveRN (struct Bufer *bufer);
-
+void TestPrintDigitStr (struct Bufer *bufer);
 
 #endif
