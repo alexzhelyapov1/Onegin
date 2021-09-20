@@ -13,30 +13,33 @@ struct String {
 	int len;
 };
 
-// struct Bufer {
-// 	struct String *strings;
-// 	int n_strings;
-// 	char *endFile;
+struct Bufer {
+	char *str;
+	int n_strings;
+	char *endFile;
+	struct String *strings;
+	long len;
+};
 
-// }
 
-
-char *InitText ();
-struct String *FillStruct (char *str, struct String *strings, int n_strings);
-int N_Str (char *s);
+struct Bufer *InitBufer ();
+char *InitText (struct Bufer *bufer);
+struct String *FillStruct (struct Bufer *bufer);
+void N_Str (struct Bufer *bufer);
 long LenOfFile (FILE *file);
-struct String *FillStruct (char *str, struct String *strings);
-void TestOutStrings (int n_strings, struct String *strings);
-void SortStringsLen (struct String *strings, int n_strings);
-void PrintSortTextConsole (struct String *strings, int n_strings);
-void PrintSortTextFile (struct String *strings, int n_strings);
-void SortStringsAlphabet (struct String *strings, int n_strings);
+
+void TestOutStrings (struct Bufer *bufer);
+void SortStringsLen (struct Bufer *bufer);
+void PrintSortTextConsole (struct Bufer *bufer);
+void PrintSortTextFile (struct Bufer *bufer);
+void SortStringsAlphabet (struct Bufer *bufer);
 void SwapStringsInStruct (struct String *strings, int i);
 int CompareStrings (char *string1, char *string2);
 int CompareStringsReverse (char *string1, int len1, char *string2, int len2);
-void SortStringsAlphabetReverse (struct String *strings, int n_strings);
+void SortStringsAlphabetReverse (struct Bufer *bufer);
 void TestPrintStr (char *s, char *endFile);
-char *RemoveN (char *str);
+void RemoveN (struct Bufer *bufer);
+void RemoveRN (struct Bufer *bufer);
 
 
 #endif
