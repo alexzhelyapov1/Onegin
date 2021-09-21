@@ -5,7 +5,8 @@ struct Bufer *InitBufer () {
 	struct Bufer *bufer = (struct Bufer *) calloc (1, sizeof (struct Bufer));
 	assert (bufer);
 	bufer->str = InitText(bufer); 
-	puts (bufer->str);
+	//puts (bufer->str);
+	//printf ("\n--------1\n");
 	N_Str (bufer);
 	bufer->strings = (struct String *) calloc (bufer->n_strings, sizeof (struct String));
 	RemoveRN (bufer);
@@ -76,7 +77,6 @@ struct String *FillStruct (struct Bufer *bufer) {
 void RemoveRN (struct Bufer *bufer) {
 	assert (bufer);
 	char *i = bufer->str;
-	bufer->endFile = strchr (i, '\0');
 	int carret = 0;
 	for (int k = 0; k < bufer->len; k++) {
 		if (i[k] == '\n')
@@ -90,6 +90,7 @@ void RemoveRN (struct Bufer *bufer) {
 		carret++;
 	}
 	i[carret] = '\0';
+	bufer->endFile = &i[carret];
 }
 
 
@@ -108,7 +109,6 @@ void SortStringsLen (struct Bufer *bufer) {		// пузырьком
 
 void PrintSortTextConsole (struct Bufer *bufer) {
 	assert (bufer);
-	printf ("-------------\n");
 	for (int i = 0; i < bufer->n_strings; i++) {
 		printf ("%s\n", bufer->strings[i].data);
 	}
@@ -118,15 +118,57 @@ void PrintSortTextConsole (struct Bufer *bufer) {
 void PrintSortTextFile (struct Bufer *bufer) {
 	assert (bufer);
 	FILE *wFile = NULL;
-	if ((wFile = fopen ("result.txt", "wb")) != NULL) {
+	if ((wFile = fopen ("result.txt", "ab")) != NULL) {
+		fprintf (wFile, "\nSorted text:\n\n");
 		for (int i = 0; i < bufer->n_strings; i++) {
 			fprintf (wFile, "%s\n", bufer->strings[i].data);
 			fflush (stdout);
 		}
+		fclose (wFile);
 	}
 	else {
 		printf ("Error in Writing");
 	}
+}
+
+
+void CleanOutFile () {
+	FILE *wFile = NULL;
+	wFile = fopen ("result.txt", "wb");
+	fflush (stdout);
+	fclose (wFile);
+
+}
+
+void PrintRowTextFile (struct Bufer *bufer) {
+	assert (bufer);
+	char *i = bufer->str;
+	FILE *wFile = fopen ("result.txt", "ab");
+	fprintf (wFile, "Row Text:\n\n");
+	while (i != bufer->endFile) {
+		if (*i == '\0') 
+			putc ('\n', wFile);
+		else
+			putc (*i, wFile);
+		i++;
+	}
+	putc ('\0', wFile);
+	putc ('\n', wFile);
+	fclose (wFile);
+}
+
+
+void PrintRowText (struct Bufer *bufer) {
+	assert (bufer);
+	char *i = bufer->str;
+	while (i != bufer->endFile) {
+		if (*i == '\0') 
+			putchar ('\n');
+		else
+			putchar (*i);
+		i++;
+	}
+	putchar ('\0');
 }
 
 

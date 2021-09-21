@@ -38,5 +38,8 @@ int CompareStringsReverse (char *string1, int len1, char *string2, int len2);
 void SortStringsAlphabetReverse (struct Bufer *bufer);
 void RemoveRN (struct Bufer *bufer);
 void TestPrintDigitStr (struct Bufer *bufer);
+void PrintRowText (struct Bufer *bufer);
+void CleanOutFile ();
+void PrintRowTextFile (struct Bufer *bufer);
 
 #endif
