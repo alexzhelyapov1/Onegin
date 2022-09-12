@@ -7,7 +7,7 @@ struct Bufer* InitBuferForFile (char* input_file_name) {
 
 	bufer->data = ReadFromFile(bufer, input_file_name); 
 	bufer->n_strings = NumberOfStrings (bufer->data);
-	bufer->strings = (struct String* ) calloc (bufer->n_strings, sizeof (struct String));
+	bufer->strings = (char**) calloc (bufer->n_strings, sizeof (char*));
 	// RemoveRNInData (bufer);
 	CleaningTheTextStyle (bufer);
 	FillStringsInBufer (bufer);
@@ -90,7 +90,7 @@ void FillStringsInBufer (struct Bufer* bufer) {
 	assert (bufer->data);
 	assert (bufer->strings);
 
-	bufer->strings[0].data = bufer->data;
+	bufer->strings[0] = bufer->data;
 	int string_number = 1;
 	unsigned long long low = 0;
 	unsigned long long fast = 1;
@@ -98,8 +98,8 @@ void FillStringsInBufer (struct Bufer* bufer) {
 	while (fast < bufer->len) {
 		// printf ("fast = %c, low = %c\n", bufer->data[fast], bufer->data[low]);
 		if (!IsFinalCharacters (bufer->data[fast]) && IsFinalCharacters (bufer->data[low])) {
-			bufer->strings[string_number].data = bufer->data + fast;
-			// printf ("Fill struct by string = %s\n", bufer->strings[string_number].data);
+			bufer->strings[string_number] = bufer->data + fast;
+			// printf ("Fill struct by string = %s\n", bufer->strings[string_number]);
 			string_number++;
 		}
 		low++;
@@ -111,7 +111,7 @@ void PrintSortedTextToConsole (struct Bufer* bufer) {
 	assert (bufer);
 
 	for (int i = 0; i < bufer->n_strings; i++) {
-		printf ("%s\n", bufer->strings[i].data);
+		printf ("%s\n", bufer->strings[i]);
 	}
 }
 
@@ -124,7 +124,7 @@ void PrintSortedTextToFile (struct Bufer* bufer, char* output_file_name) {
 		fprintf (out_file, "\n---------------------------------\nSorted text:\n"
 										"---------------------------------\n");
 		for (int i = 0; i < bufer->n_strings; i++) {
-			fprintf (out_file, "%s\n", bufer->strings[i].data);
+			fprintf (out_file, "%s\n", bufer->strings[i]);
 			fflush (out_file); 		// Вопрос, какой смысл в этом?
 		}
 		putc ('\0', out_file);
@@ -187,12 +187,12 @@ void SortStringsAlphabet (struct Bufer* bufer, enum sorting_mode mode) {
 	// printf ("Buufer->n_strings = %d\n", bufer->n_strings);
 	for (int k = 0; k < bufer->n_strings - 1; k++) {
 		for (int i = k + 1; i < bufer->n_strings; i++) {
-			if (CompareStrings (bufer->strings[i].data, bufer->strings[k].data) > 0) {
+			if (CompareStrings (bufer->strings[i], bufer->strings[k]) > 0) {
 				if (mode == DESCENDING) {
-					// printf ("%s ------ %s SWAP\n", bufer->strings[i].data, bufer->strings[k].data);
+					// printf ("%s ------ %s SWAP\n", bufer->strings[i], bufer->strings[k]);
 					SwapStringsInStruct (bufer->strings, i, k);
 				}
-				// printf ("%s ------ %s        ELSE\n", bufer->strings[i].data, bufer->strings[k].data);
+				// printf ("%s ------ %s        ELSE\n", bufer->strings[i], bufer->strings[k]);
 			}
 			else if (mode == ASCENDING) {
 				// printf ("ERRRRRRORORORORO\n");
@@ -202,15 +202,11 @@ void SortStringsAlphabet (struct Bufer* bufer, enum sorting_mode mode) {
 	}
 }
 
-void SwapStringsInStruct (struct String* strings, int a, int b) {
-	int tempLen = 0;
+void SwapStringsInStruct (char** strings, int a, int b) {
 	char* tempData = 0;
-	tempLen = strings[a].len;
-	tempData = strings[a].data;
-	strings[a].len = strings[b].len;
-	strings[a].data = strings[b].data;
-	strings[b].len = tempLen;
-	strings[b].data = tempData;	
+	tempData = strings[a];
+	strings[a] = strings[b];
+	strings[b] = tempData;	
 }
 
 
