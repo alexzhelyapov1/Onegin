@@ -1,4 +1,5 @@
 #include "onegin.h"
+#include "tech_func_onegin.h"
 
 
 struct Bufer* InitBuferForFile (char* input_file_name) {
@@ -8,7 +9,6 @@ struct Bufer* InitBuferForFile (char* input_file_name) {
 	bufer->data = ReadFromFile(bufer, input_file_name); 
 	bufer->n_strings = NumberOfStrings (bufer->data);
 	bufer->strings = (char**) calloc (bufer->n_strings, sizeof (char*));
-	// RemoveRNInData (bufer);
 	CleaningTheTextStyle (bufer);
 	FillStringsInBufer (bufer);
 	return bufer;
@@ -190,19 +190,19 @@ void SortStringsAlphabet (struct Bufer* bufer, enum sorting_mode mode) {
 			if (CompareStrings (bufer->strings[i], bufer->strings[k]) > 0) {
 				if (mode == DESCENDING) {
 					// printf ("%s ------ %s SWAP\n", bufer->strings[i], bufer->strings[k]);
-					SwapStringsInStruct (bufer->strings, i, k);
+					SwapStrings (bufer->strings, i, k);
 				}
 				// printf ("%s ------ %s        ELSE\n", bufer->strings[i], bufer->strings[k]);
 			}
 			else if (mode == ASCENDING) {
 				// printf ("ERRRRRRORORORORO\n");
-				SwapStringsInStruct (bufer->strings, i, k);
+				SwapStrings (bufer->strings, i, k);
 			}
 		}
 	}
 }
 
-void SwapStringsInStruct (char** strings, int a, int b) {
+void SwapStrings (char** strings, int a, int b) {
 	char* tempData = 0;
 	tempData = strings[a];
 	strings[a] = strings[b];
@@ -216,4 +216,10 @@ int CompareStrings (char* string1, char* string2) {
 		i++;
 	}
 	return string1[i] - string2[i];
+}
+
+void CleanMemoryOfBufer (struct Bufer *bufer) {
+	free (bufer->strings);
+	free (bufer->data);
+	free (bufer);
 }

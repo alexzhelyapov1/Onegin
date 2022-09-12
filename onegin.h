@@ -8,9 +8,8 @@
 #include <assert.h>
 
 struct Bufer {
-	int n_strings;				
+	int n_strings;				// Number of strings in text
 	char* data; 				// Global data from file
-	char* end_file;				// ???
 	char** strings;		// Array of pointers to strings in data
 	unsigned long long len;		// Length of data in chars, with closing \0
 };
@@ -21,22 +20,13 @@ enum sorting_mode {
 };
 
 
-struct Bufer* InitBuferForFile (char* input_file_name);
-char* ReadFromFile (struct Bufer* bufer, char* input_file_name);
-void FillStringsInBufer (struct Bufer* bufer);
-int NumberOfStrings (char* data);
-unsigned long long LenOfFile (FILE* file);
-
-void CleaningTheTextStyle (struct Bufer* bufer);
-int IsFinalCharacters (char c);
-
+struct Bufer* InitBuferForFile (char* input_file_name);						// Read text form file to buffer
 void PrintSortedTextToConsole (struct Bufer* bufer);
 void PrintSortedTextToFile (struct Bufer* bufer, char* output_file_name);
-void SortStringsAlphabet (struct Bufer* bufer, enum sorting_mode);
-void SwapStringsInStruct (char** strings, int a, int b);
-int CompareStrings (char* string1, char* string2);
+void SortStringsAlphabet (struct Bufer* bufer, enum sorting_mode);			// Sorting text in buffer
 void PrintRowTextToConsole (struct Bufer* bufer);
-void CleanFile (char* filename);
 void PrintRowTextToFile (struct Bufer* bufer, char* output_file_name);
+void CleanFile (char* filename);
+void CleanMemoryOfBufer (struct Bufer *bufer);											// Clean ouput file
 
 #endif

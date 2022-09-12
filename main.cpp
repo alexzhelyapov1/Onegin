@@ -12,15 +12,13 @@ int main () {
 	PrintRowTextToConsole (bufer);
 	printf ("\n-------------\n");
 
+	SortStringsAlphabet (bufer, ASCENDING);
+
 	printf ("Sorted Text:");
 	printf ("\n-------------\n");
-	SortStringsAlphabet (bufer, ASCENDING);
 	PrintSortedTextToConsole (bufer);
 	PrintSortedTextToFile (bufer, "output.txt");
-
-
-	// Проверить правильно ли чиститься память
-	free (bufer->data);
-	free (bufer);
+	
+	CleanMemoryOfBufer (bufer);
 	return 0;
 }
