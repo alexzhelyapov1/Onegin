@@ -1,24 +1,26 @@
-#include "Onegin.h"
+#include "onegin.h"
 
 
 int main () {
-	struct Bufer *bufer = InitBufer();
+	struct Bufer *bufer = InitBuferForFile("input.txt");
 
-	CleanOutFile ();
+	CleanFile ("output.txt");
+
 	printf ("Row Text:");
 	printf ("\n-------------\n");
-	PrintRowTextFile (bufer);
-	PrintRowText (bufer);
+	PrintRowTextToFile (bufer, "output.txt");
+	PrintRowTextToConsole (bufer);
 	printf ("\n-------------\n");
-	printf ("Reverse Text:");
-	printf ("\n-------------\n");
-	SortStringsAlphabetReverse (bufer);
 
-	PrintSortTextConsole (bufer);
-	PrintSortTextFile (bufer);
-	
-	free (bufer->str);
-	free (bufer->strings);
+	printf ("Sorted Text:");
+	printf ("\n-------------\n");
+	SortStringsAlphabet (bufer, ASCENDING);
+	PrintSortedTextToConsole (bufer);
+	PrintSortedTextToFile (bufer, "output.txt");
+
+
+	// Проверить правильно ли чиститься память
+	free (bufer->data);
 	free (bufer);
 	return 0;
 }
