@@ -4,22 +4,22 @@
 struct Bufer *InitBufer () {
 	struct Bufer *bufer = (struct Bufer *) calloc (1, sizeof (struct Bufer));
 	assert (bufer);
-	bufer->str = InitText(bufer); 
-	//puts (bufer->str);
-	//printf ("\n--------1\n");
-	N_Str (bufer);
+
+	bufer->data = ReadFromFile(bufer); 
+	bufer->n_strings = NumberOfStrings (bufer->data);
 	bufer->strings = (struct String *) calloc (bufer->n_strings, sizeof (struct String));
-	RemoveRN (bufer);
-	FillStruct (bufer);
+	// RemoveRNInData (bufer);
+	FillStringsInBufer (bufer);
 	return bufer;
 }
 
 
-char *InitText (struct Bufer *bufer) {
+char *ReadFromFile (struct Bufer *bufer) {
 	assert (bufer);
+
 	FILE *txtFile = NULL;
-	if ((txtFile = fopen ("text.txt", "rb")) != NULL) {
-		long len = LenOfFile (txtFile);
+	if (txtFile = fopen ("text.txt", "rb")) {
+		unsigned long long len = LenOfFile (txtFile);
 		bufer->len = len;
 		char *str = (char *) calloc (len, sizeof (char));
 		fread (str, sizeof (char), len, txtFile);
@@ -33,65 +33,52 @@ char *InitText (struct Bufer *bufer) {
 }
 
 
-long LenOfFile (FILE *file) {
+unsigned long long LenOfFile (FILE *file) {
 	assert (file != NULL);
 
 	fseek (file, 0, SEEK_END);
-	long len = ftell (file) + 1;
+	unsigned long long len = ftell (file) + 1; //including in len the closing \0
 	rewind(file);
 	return len;
 }
 
 
-void N_Str (struct Bufer *bufer) {
-	assert (bufer);
-	assert (bufer->str != NULL);
+int NumberOfStrings (char* data) {
+	assert (data);
 
-	bufer->n_strings = 0;
-	char *i = bufer->str - 1;
-	while ((i = strchr (i + 1, '\n')) != NULL) {
-		bufer->n_strings++;
+	int number_of_strings = 0;
+	unsigned long long i = 0;
+	while (data[i] != '/0') {
+		if (data[i] == '/n')
+			number_of_strings++;
+		i++;
 	}
-	bufer->n_strings++;
+	return number_of_strings + 1;
 }
 
 
-struct String *FillStruct (struct Bufer *bufer) {
+void FillStringsInBufer (struct Bufer *bufer) {
 	assert (bufer);
-	assert (bufer->str != NULL);
-	assert (bufer->strings != NULL);
+	assert (bufer->data);
+	assert (bufer->strings);
 
-	bufer->strings->data = bufer->str;
-	int stringNumber = 0;
-	char *i = bufer->str - 1;
-	while (i != bufer->endFile && (i = strchr (i + 1, '\0')) != NULL) {
-		bufer->strings[stringNumber].len = i - bufer->strings[stringNumber].data;
-		stringNumber++;
-		*i = '\0';
-		bufer->strings[stringNumber].data = i + 1;
+	bufer->strings[0].data = bufer->data;
+	int string_number = 1;
+	unsigned long long low = 0;
+	unsigned long long fast = 1;
+
+	while (bufer->data[fast]) {
+		if ((bufer->data[low] == '\r' || bufer->data[low] == '\n') && bufer->data[fast] != '\r'
+																   && bufer->data[fast] != '\n') {
+			bufer->strings[string_number].data = bufer->data + fast;
+			string_number++;
+		}
+		low++;
+		fast++;
 	}
-	return bufer->strings; 
 }
 
-
-void RemoveRN (struct Bufer *bufer) {
-	assert (bufer);
-	char *i = bufer->str;
-	int carret = 0;
-	for (int k = 0; k < bufer->len; k++) {
-		if (i[k] == '\n')
-			i[carret] = '\0';
-		else if (i[k] == '\0')
-			break;
-		else if (i[k] == '\r')
-			carret--;
-		else
-			i[carret] = i[k];
-		carret++;
-	}
-	i[carret] = '\0';
-	bufer->endFile = &i[carret];
-}
+// Debugged it to here ---------------------------------------------------
 
 
 void SortStringsLen (struct Bufer *bufer) {		// пузырьком
@@ -145,7 +132,7 @@ void PrintRowTextFile (struct Bufer *bufer) {
 	char *i = bufer->str;
 	FILE *wFile = fopen ("result.txt", "ab");
 	fprintf (wFile, "Row Text:\n\n");
-	while (i != bufer->endFile) {
+	while (i != bufer->end_file) {
 		if (*i == '\0') 
 			putc ('\n', wFile);
 		else
@@ -161,7 +148,7 @@ void PrintRowTextFile (struct Bufer *bufer) {
 void PrintRowText (struct Bufer *bufer) {
 	assert (bufer);
 	char *i = bufer->str;
-	while (i != bufer->endFile) {
+	while (i != bufer->end_file) {
 		if (*i == '\0') 
 			putchar ('\n');
 		else
@@ -235,8 +222,8 @@ void TestPrintDigitStr (struct Bufer *bufer) {
 	printf ("PRINTING\n");
 	int i = 0;
 	char *s = bufer->str;
-	char *endFile = bufer->endFile;
-	while (&s[i] != endFile) {
+	char *end_file = bufer->end_file;
+	while (&s[i] != end_file) {
 		printf("%d ", s[i]);
 		i++;
 	}

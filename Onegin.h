@@ -14,19 +14,19 @@ struct String {
 };
 
 struct Bufer {
-	char *str;
-	int n_strings;
-	char *endFile;
-	struct String *strings;
-	long len;
+	int n_strings;				
+	char *data; 				// Global data from file
+	char *end_file;				// ???
+	struct String *strings;		// Array of pointers to strings in data
+	unsigned long long len;		// Length of data in chars, with closing \0
 };
 
 
 struct Bufer *InitBufer ();
-char *InitText (struct Bufer *bufer);
-struct String *FillStruct (struct Bufer *bufer);
-void N_Str (struct Bufer *bufer);
-long LenOfFile (FILE *file);
+char *ReadFromFile (struct Bufer *bufer);
+void FillStringsInBufer (struct Bufer *bufer);
+int NumberOfStrings (struct Bufer *bufer);
+unsigned long long LenOfFile (FILE *file);
 
 void SortStringsLen (struct Bufer *bufer);
 void PrintSortTextConsole (struct Bufer *bufer);
@@ -36,7 +36,7 @@ void SwapStringsInStruct (struct String *strings, int i);
 int CompareStrings (char *string1, char *string2);
 int CompareStringsReverse (char *string1, int len1, char *string2, int len2);
 void SortStringsAlphabetReverse (struct Bufer *bufer);
-void RemoveRN (struct Bufer *bufer);
+// void RemoveRNInData (struct Bufer *bufer);					// Remove /r, /n in data for text style
 void TestPrintDigitStr (struct Bufer *bufer);
 void PrintRowText (struct Bufer *bufer);
 void CleanOutFile ();
