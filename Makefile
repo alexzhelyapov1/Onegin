@@ -3,6 +3,7 @@ all: Debug
 clean:
 	touch 1.o
 	rm *.o
+	rm a.out
 
 Debug: clean onegin.o main.o
 	g++ -Wall -o a.out onegin.o main.o
