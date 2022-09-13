@@ -6,16 +6,10 @@ int main () {
 
 	CleanFile ("output.txt");
 
-	printf ("Row Text:");
-	printf ("\n-------------\n");
 	PrintRowTextToFile (bufer, "output.txt");
 	PrintRowTextToConsole (bufer);
-	printf ("\n-------------\n");
 
-	SortStringsAlphabet (bufer, ASCENDING);
-
-	printf ("Sorted Text:");
-	printf ("\n-------------\n");
+	SortStringsRhyme (bufer, ASCENDING);
 	PrintSortedTextToConsole (bufer);
 	PrintSortedTextToFile (bufer, "output.txt");
 	

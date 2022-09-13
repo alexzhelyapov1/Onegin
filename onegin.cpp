@@ -96,10 +96,8 @@ void FillStringsInBufer (struct Bufer* bufer) {
 	unsigned long long fast = 1;
 
 	while (fast < bufer->len) {
-		// printf ("fast = %c, low = %c\n", bufer->data[fast], bufer->data[low]);
 		if (!IsFinalCharacters (bufer->data[fast]) && IsFinalCharacters (bufer->data[low])) {
 			bufer->strings[string_number] = bufer->data + fast;
-			// printf ("Fill struct by string = %s\n", bufer->strings[string_number]);
 			string_number++;
 		}
 		low++;
@@ -110,11 +108,13 @@ void FillStringsInBufer (struct Bufer* bufer) {
 void PrintSortedTextToConsole (struct Bufer* bufer) {
 	assert (bufer);
 
+	printf ("\n---------------------------------\nSorted text:\n"
+										"---------------------------------\n");
+
 	for (int i = 0; i < bufer->n_strings; i++) {
 		printf ("%s\n", bufer->strings[i]);
 	}
 }
-
 
 void PrintSortedTextToFile (struct Bufer* bufer, char* output_file_name) {
 	assert (bufer);
@@ -133,15 +133,6 @@ void PrintSortedTextToFile (struct Bufer* bufer, char* output_file_name) {
 	else {
 		printf ("Error in Writing");
 	}
-}
-
-
-void CleanFile (char* file_name) {
-	FILE* out_file = NULL;
-	out_file = fopen (file_name, "w");
-	fflush (out_file); 					//Зачем?
-	fclose (out_file);
-
 }
 
 void PrintRowTextToFile (struct Bufer* bufer, char* output_file_name) {
@@ -168,8 +159,10 @@ void PrintRowTextToConsole (struct Bufer* bufer) {
 	assert (bufer);
 	assert (bufer->data);
 
-	unsigned long long i = 0;
+	printf ("---------------------------------\nRow Text:\n"
+									"---------------------------------\n");
 
+	unsigned long long i = 0;
 	while (i < bufer->len) {
 		if (bufer->data[i] == '\0' && i != bufer->len - 1)
 			putchar ('\n');
@@ -180,22 +173,34 @@ void PrintRowTextToConsole (struct Bufer* bufer) {
 	}
 }
 
-
 void SortStringsAlphabet (struct Bufer* bufer, enum sorting_mode mode) {
 	assert (bufer);
 
-	// printf ("Buufer->n_strings = %d\n", bufer->n_strings);
 	for (int k = 0; k < bufer->n_strings - 1; k++) {
 		for (int i = k + 1; i < bufer->n_strings; i++) {
 			if (CompareStrings (bufer->strings[i], bufer->strings[k]) > 0) {
 				if (mode == DESCENDING) {
-					// printf ("%s ------ %s SWAP\n", bufer->strings[i], bufer->strings[k]);
 					SwapStrings (bufer->strings, i, k);
 				}
-				// printf ("%s ------ %s        ELSE\n", bufer->strings[i], bufer->strings[k]);
 			}
 			else if (mode == ASCENDING) {
-				// printf ("ERRRRRRORORORORO\n");
+				SwapStrings (bufer->strings, i, k);
+			}
+		}
+	}
+}
+
+void SortStringsRhyme (struct Bufer* bufer, enum sorting_mode mode) {
+	assert (bufer);
+
+	for (int k = 0; k < bufer->n_strings - 1; k++) {
+		for (int i = k + 1; i < bufer->n_strings; i++) {
+			if (CompareStringsRhyme (bufer->strings[i], bufer->strings[k]) > 0) {
+				if (mode == DESCENDING) {
+					SwapStrings (bufer->strings, i, k);
+				}
+			}
+			else if (mode == ASCENDING) {
 				SwapStrings (bufer->strings, i, k);
 			}
 		}
@@ -209,13 +214,30 @@ void SwapStrings (char** strings, int a, int b) {
 	strings[b] = tempData;	
 }
 
-
 int CompareStrings (char* string1, char* string2) {
 	int i = 0;
 	while (string1[i] != '\0' && string2[i] != '\0' && string1[i] == string2[i]){
 		i++;
 	}
 	return string1[i] - string2[i];
+}
+
+int CompareStringsRhyme (char* string1, char* string2) {
+	int i = strlen (string1) - 1;
+	int j = strlen (string2) - 1;
+	while (i > 0 && j > 0 && string1[i] == string2[i]){
+		i--;
+		j--;
+	}
+	return string1[i] - string2[j];
+}
+
+void CleanFile (char* file_name) {
+	FILE* out_file = NULL;
+	out_file = fopen (file_name, "w");
+	fflush (out_file); 					//Зачем?
+	fclose (out_file);
+
 }
 
 void CleanMemoryOfBufer (struct Bufer *bufer) {

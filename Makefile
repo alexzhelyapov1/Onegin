@@ -2,6 +2,7 @@ all: Debug
 
 clean:
 	touch 1.o
+	touch a.out
 	rm *.o
 	rm a.out
 

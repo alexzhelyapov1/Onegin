@@ -9,5 +9,6 @@ void CleaningTheTextStyle (struct Bufer* bufer);                    // Replace /
 int IsFinalCharacters (char c);                                     // Return 1, if char is '/0', '/n', '/r'
 void SwapStrings (char** strings, int a, int b);
 int CompareStrings (char* string1, char* string2);
+int CompareStringsRhyme (char* string1, char* string2);
 
 #endif

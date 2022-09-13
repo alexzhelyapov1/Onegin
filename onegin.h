@@ -23,10 +23,11 @@ enum sorting_mode {
 struct Bufer* InitBuferForFile (char* input_file_name);						// Read text form file to buffer
 void PrintSortedTextToConsole (struct Bufer* bufer);
 void PrintSortedTextToFile (struct Bufer* bufer, char* output_file_name);
-void SortStringsAlphabet (struct Bufer* bufer, enum sorting_mode);			// Sorting text in buffer
+void SortStringsAlphabet (struct Bufer* bufer, enum sorting_mode mode);			// Sorting text in buffer
+void SortStringsRhyme (struct Bufer* bufer, enum sorting_mode mode);			// Sorting strings from the end
 void PrintRowTextToConsole (struct Bufer* bufer);
 void PrintRowTextToFile (struct Bufer* bufer, char* output_file_name);
 void CleanFile (char* filename);
-void CleanMemoryOfBufer (struct Bufer *bufer);											// Clean ouput file
+void CleanMemoryOfBufer (struct Bufer *bufer);									// Clean ouput file
 
 #endif
