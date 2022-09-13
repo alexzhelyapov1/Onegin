@@ -125,7 +125,6 @@ void PrintSortedTextToFile (struct Bufer* bufer, char* output_file_name) {
 										"---------------------------------\n");
 		for (int i = 0; i < bufer->n_strings; i++) {
 			fprintf (out_file, "%s\n", bufer->strings[i]);
-			fflush (out_file); 		// Вопрос, какой смысл в этом?
 		}
 		putc ('\0', out_file);
 		fclose (out_file);
@@ -235,7 +234,6 @@ int CompareStringsRhyme (char* string1, char* string2) {
 void CleanFile (char* file_name) {
 	FILE* out_file = NULL;
 	out_file = fopen (file_name, "w");
-	fflush (out_file); 					//Зачем?
 	fclose (out_file);
 
 }
