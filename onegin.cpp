@@ -6,7 +6,8 @@ struct Bufer* InitBuferForFile (char* input_file_name) {
 	struct Bufer* bufer = (struct Bufer* ) calloc (1, sizeof (struct Bufer));
 	assert (bufer);
 
-	bufer->data = ReadFromFile(bufer, input_file_name); 
+	bufer->data = ReadFromFile(bufer, input_file_name);
+	FormatText (bufer);
 	bufer->n_strings = NumberOfStrings (bufer->data);
 	bufer->strings = (char**) calloc (bufer->n_strings, sizeof (char*));
 	CleaningTheTextStyle (bufer);
@@ -30,6 +31,27 @@ char* ReadFromFile (struct Bufer* bufer, char* input_file_name) {
 		printf ("Error in InitText!");
 		return NULL;
 	}
+}
+
+void FormatText (struct Bufer* bufer) {
+	assert (bufer);
+
+	char* data = bufer->data;
+	int low = 0;
+	int fast = 0;
+	while (fast < bufer->len - 1) {
+		printf ("fast = %c fast+1 = %c\n", data[fast], data[fast + 1]);
+		if ((data[fast] == '\0' || fast == 0) && (data[fast + 1] == ' ' || data[fast + 1] == '\0'))	{		// When strings starts with tabs or it's zero string
+			while (fast < bufer->len && (data[fast] == ' ' || data[fast] == '\0')) fast++;
+			printf ("First letter = %c\n", data[fast]);
+		}
+		while (data[fast] == ' ' && data[fast + 1] == ' ') fast++;									// More than 1 space
+		while (data[fast] == '\n' && data[fast + 1] == '\n') fast++;
+		data[low] = data[fast];
+		low++;
+		fast++;
+	}
+	data[low] = '\0';
 }
 
 unsigned long long LenOfFile (FILE* file) {
@@ -172,37 +194,55 @@ void PrintRowTextToConsole (struct Bufer* bufer) {
 	}
 }
 
-void SortStringsAlphabet (struct Bufer* bufer, enum sorting_mode mode) {
+void SortStringsAlphabet (struct Bufer* bufer, enum sorting_mode mode, int first_number, int last_number) {
 	assert (bufer);
 
-	for (int k = 0; k < bufer->n_strings - 1; k++) {
-		for (int i = k + 1; i < bufer->n_strings; i++) {
-			if (CompareStrings (bufer->strings[i], bufer->strings[k]) > 0) {
-				if (mode == DESCENDING) {
-					SwapStrings (bufer->strings, i, k);
-				}
-			}
-			else if (mode == ASCENDING) {
-				SwapStrings (bufer->strings, i, k);
+	if (first_number >= last_number) return;
+	int left = first_number;
+	int right = last_number;
+	int pivot = (first_number + last_number) / 2;	// Nearly middle element
+
+	while (left >= 0 && right > 0 && right < bufer->n_strings && left < right && left <= pivot) {
+		if (CompareStrings (bufer->strings[left], bufer->strings[right]) > 0) {
+			if (mode == ASCENDING) {
+				SwapStrings (bufer->strings, left, right);
 			}
 		}
+		else if (mode == DESCENDING) {
+				SwapStrings (bufer->strings, left, right);
+		}
+		left++;
+		right--;
+	}
+	if (first_number != right) {
+		SortStringsAlphabet (bufer, mode, first_number, left);
+		SortStringsAlphabet (bufer, mode, left, last_number);
 	}
 }
 
-void SortStringsRhyme (struct Bufer* bufer, enum sorting_mode mode) {
+void SortStringsRhyme (struct Bufer* bufer, enum sorting_mode mode, int first_number, int last_number) {
 	assert (bufer);
 
-	for (int k = 0; k < bufer->n_strings - 1; k++) {
-		for (int i = k + 1; i < bufer->n_strings; i++) {
-			if (CompareStringsRhyme (bufer->strings[i], bufer->strings[k]) > 0) {
-				if (mode == DESCENDING) {
-					SwapStrings (bufer->strings, i, k);
-				}
-			}
-			else if (mode == ASCENDING) {
-				SwapStrings (bufer->strings, i, k);
+	if (first_number >= last_number) return;
+	int left = first_number;
+	int right = last_number;
+	int pivot = (first_number + last_number) / 2;	// Nearly middle element
+
+	while (left >= 0 && right > 0 && right < bufer->n_strings && left < right && left <= pivot) {
+		if (CompareStringsRhyme (bufer->strings[left], bufer->strings[right]) > 0) {
+			if (mode == ASCENDING) {
+				SwapStrings (bufer->strings, left, right);
 			}
 		}
+		else if (mode == DESCENDING) {
+				SwapStrings (bufer->strings, left, right);
+		}
+		left++;
+		right--;
+	}
+	if (first_number != right) {
+		SortStringsRhyme (bufer, mode, first_number, left);
+		SortStringsRhyme (bufer, mode, left, last_number);
 	}
 }
 
@@ -214,6 +254,7 @@ void SwapStrings (char** strings, int a, int b) {
 }
 
 int CompareStrings (char* string1, char* string2) {
+	if (!string1 || !string2) return -1;
 	int i = 0;
 	while (string1[i] != '\0' && string2[i] != '\0' && string1[i] == string2[i]){
 		i++;

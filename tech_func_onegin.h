@@ -2,6 +2,7 @@
 #define TECH_FUNC_ONEGIN_INCLUDED
 
 char* ReadFromFile (struct Bufer* bufer, char* input_file_name);    // Read test form file to bufer->data
+void FormatText (struct Bufer* bufer);								// Delete extra spaces and /0 strings
 void FillStringsInBufer (struct Bufer* bufer);                      // Fill strings array with ptrs to strings in text
 int NumberOfStrings (char* data);                                   // Return number of strings in out text
 unsigned long long LenOfFile (FILE* file);
