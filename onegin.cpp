@@ -1,8 +1,6 @@
 #include "onegin.h"
 #include "tech_func_onegin.h"
 
-// todo _( -> ( 
-
 
 struct Bufer* InitBuferForFile (char* input_file_name) {
 	deb_message(printf("Func = %s\n", __FUNCTION__);)
@@ -12,6 +10,7 @@ struct Bufer* InitBuferForFile (char* input_file_name) {
 
 	ReadFromFile(bufer, input_file_name);
 	FormatText (bufer);
+	deb_message(PrintRowTextToConsole(bufer));
 	NumberOfStrings (bufer);
 	// CleaningTheTextStyle (bufer);
 	bufer->strings = (char**) calloc (bufer->n_strings, sizeof (char*));
@@ -32,6 +31,7 @@ void ReadFromFile (struct Bufer* bufer, char* input_file_name) {
 		deb_message(printf("Allocated %lld bytes for data\n", len * sizeof(char));)
 
 		fread (data, sizeof (char), len, input_file);
+		deb_message(printf("Len of input = %lld, len of data = %ld\n", len, strlen(data));)
 		fclose (input_file);
 		deb_message(printf("Readed data:\n---------------------------------\n%s\n---------------------------------\n", data);)
 		bufer->data = data;
@@ -51,18 +51,27 @@ void FormatText (struct Bufer* bufer) {				// Removing extra spacing
 
 	char* data = bufer->data;
 	while (fast + 1 < bufer->len) {
-		if ((IsFinalCharacters(data[fast]) || fast == 0) && (data[fast + 1] == ' ' || IsFinalCharacters(data[fast + 1])))	{		// When strings starts with tabs or it's zero string
+		printf("1: %d, %d\n", data[fast], data[fast + 1]);
+		if ((IsFinalCharacters(data[fast]) || (fast == 0 && data[fast] == ' ')) && (data[fast + 1] == ' ' || IsFinalCharacters(data[fast + 1])))	{		// When strings starts with tabs or it's zero string
 			while (fast + 1 < bufer->len && (data[fast + 1] == ' ' || IsFinalCharacters(data[fast + 1]))) fast++;
 		}
-		while (data[fast] == ' ' && data[fast + 1] == ' ') fast++;									// More than 1 space
-
-		if (!IsFinalCharacters(data[fast + 1])){
+		printf("2: %d, %d\n", data[fast]);
+		while (fast + 1 < bufer->len && data[fast] == ' ' && data[fast + 1] == ' ') fast++;	
+		printf("3: %d, %d\n", data[fast]);						// More than 1 space
+		if (fast + 1 < bufer->len && IsFinalCharacters(data[fast + 1]))	fast++;
+		printf("4: %d, %d\n", data[fast]);
+		if (fast + 1 < bufer->len && !IsFinalCharacters(data[fast + 1])){
 			data[low] = data[fast + 1];
 		}
-		else{
-			data[low] = '\0';
+		else {
+			if (low > 0 && data[low - 1] == '\0') {
+				low--;
+			}
+			else {
+				data[low] = '\0';
+			}
 		}
-
+	// printf("%d ", data[low]);
 		low++;
 		fast++;
 	}
