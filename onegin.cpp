@@ -45,37 +45,48 @@ void FormatText (struct Bufer* bufer) {				// Removing extra spacing
 	deb_message(printf("Func = %s\n", __FUNCTION__);)
 	assert (bufer);
 	assert (bufer->data);
-
-	unsigned long long low = 1;
-	unsigned long long fast = 0;
-
 	char* data = bufer->data;
-	while (fast + 1 < bufer->len) {
-		printf("1: %d, %d\n", data[fast], data[fast + 1]);
-		if ((IsFinalCharacters(data[fast]) || (fast == 0 && data[fast] == ' ')) && (data[fast + 1] == ' ' || IsFinalCharacters(data[fast + 1])))	{		// When strings starts with tabs or it's zero string
-			while (fast + 1 < bufer->len && (data[fast + 1] == ' ' || IsFinalCharacters(data[fast + 1]))) fast++;
+
+	unsigned long long low = 0;
+	unsigned long long fast = 0;
+	unsigned long long end = bufer->len - 1;
+
+	while ((fast < bufer->len) && (IsFinalCharacters(data[fast]) || data[fast] == ' '))	fast++;		// Removing starting extra elements
+	while ((end >= 0) && (IsFinalCharacters(data[end]) || data[end] == ' '))	end--;		// Removing ending extra elements (need to put \0 in the end)
+
+	printf ("Fast = %d, end = %d\n", fast, end);
+	if (fast > end) {
+		data[0] = '\0';
+		return;
+	}
+
+	while (fast + 1 <= end) {
+		bool flag_new_str = false;
+		bool flag_extra_symbols = false;
+		while ((IsFinalCharacters(data[fast]) || data[fast] == ' ') && (IsFinalCharacters(data[fast + 1]) || data[fast + 1] == ' ')) {
+			flag_extra_symbols = true;
+			if (IsFinalCharacters(data[fast]) || IsFinalCharacters(data[fast + 1])) {
+				flag_new_str = true;
+			}
+			fast++;
+			if (fast > end) break;
 		}
-		printf("2: %d, %d\n", data[fast]);
-		while (fast + 1 < bufer->len && data[fast] == ' ' && data[fast + 1] == ' ') fast++;	
-		printf("3: %d, %d\n", data[fast]);						// More than 1 space
-		if (fast + 1 < bufer->len && IsFinalCharacters(data[fast + 1]))	fast++;
-		printf("4: %d, %d\n", data[fast]);
-		if (fast + 1 < bufer->len && !IsFinalCharacters(data[fast + 1])){
-			data[low] = data[fast + 1];
+		if (flag_extra_symbols && flag_new_str) {
+			data[low] = '\0';
+		}
+		else if (flag_extra_symbols) {
+			data[low] = ' ';
 		}
 		else {
-			if (low > 0 && data[low - 1] == '\0') {
-				low--;
-			}
-			else {
-				data[low] = '\0';
-			}
+			data[low] = data[fast];
 		}
-	// printf("%d ", data[low]);
 		low++;
 		fast++;
 	}
-	bufer->len = low;
+	data[low] = data[end];
+	low++;
+	data[low] = '\0';
+	bufer->len = low + 1;
 	deb_message(printf("New len of data = %lld\n", bufer->len);)
 }
 
