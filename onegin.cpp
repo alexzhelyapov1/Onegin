@@ -3,58 +3,70 @@
 
 
 struct Bufer* InitBuferForFile (char* input_file_name) {
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	struct Bufer* bufer = (struct Bufer* ) calloc (1, sizeof (struct Bufer));
+	deb_message(printf("Allocation for buffer result = %d.\n", bufer);)
 	assert (bufer);
 
 	bufer->data = ReadFromFile(bufer, input_file_name);
-	FormatText (bufer);
 	bufer->n_strings = NumberOfStrings (bufer->data);
+	// CleaningTheTextStyle (bufer);
+	FormatText (bufer);
 	bufer->strings = (char**) calloc (bufer->n_strings, sizeof (char*));
-	CleaningTheTextStyle (bufer);
 	FillStringsInBufer (bufer);
 	return bufer;
 }
 
 char* ReadFromFile (struct Bufer* bufer, char* input_file_name) {
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	assert (bufer);
 
 	FILE* input_file = NULL;
 	if ((input_file = fopen (input_file_name, "rb"))) {
 		unsigned long long len = LenOfFile (input_file);
 		bufer->len = len;
-		char* data = (char* ) calloc (len, sizeof (char));
+		char* data = (char* ) calloc (len, sizeof(char));
+		deb_message(printf("Allocated %d bytes for data\n", len * sizeof(char));)
 		fread (data, sizeof (char), len, input_file);
 		fclose (input_file);
+		deb_message(printf("%s", data);)
 		return data;
 	}
 	else {
-		printf ("Error in InitText!");
+		err_message(printf ("Error in InitText!\n");)
 		return NULL;
 	}
 }
 
-void FormatText (struct Bufer* bufer) {
+void FormatText (struct Bufer* bufer) {				// Removing extra spacing
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	assert (bufer);
+	assert (bufer->data);
+
+	unsigned long long low = 1;
+	unsigned long long fast = 0;
+	unsigned long long i = 1;
 
 	char* data = bufer->data;
-	int low = 0;
-	int fast = 0;
-	while (fast < bufer->len - 1) {
-		printf ("fast = %c fast+1 = %c\n", data[fast], data[fast + 1]);
-		if ((data[fast] == '\0' || fast == 0) && (data[fast + 1] == ' ' || data[fast + 1] == '\0'))	{		// When strings starts with tabs or it's zero string
-			while (fast < bufer->len && (data[fast] == ' ' || data[fast] == '\0')) fast++;
-			printf ("First letter = %c\n", data[fast]);
+	while (fast + 1 < bufer->len) {
+		if ((IsFinalCharacters(data[fast]) || fast == 0) && (data[fast + 1] == ' ' || IsFinalCharacters(data[fast + 1])))	{		// When strings starts with tabs or it's zero string
+			while (fast + 1 < bufer->len && (data[fast + 1] == ' ' || IsFinalCharacters(data[fast + 1]))) fast++;
 		}
 		while (data[fast] == ' ' && data[fast + 1] == ' ') fast++;									// More than 1 space
-		while (data[fast] == '\n' && data[fast + 1] == '\n') fast++;
-		data[low] = data[fast];
+		// while (IsFinalCharacters(data[fast]) && IsFinalCharacters(data[fast + 1])) fast++;
+		if (!IsFinalCharacters(data[fast + 1]))
+			data[low] = data[fast + 1];
+		else
+			data[low] = '\0';
 		low++;
 		fast++;
 	}
-	data[low] = '\0';
+	bufer->len = low;
+	deb_message(printf("New len of data = %d\n", bufer->len);)
 }
 
 unsigned long long LenOfFile (FILE* file) {
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	assert (file != NULL);
 
 	fseek (file, 0, SEEK_END);
@@ -64,6 +76,7 @@ unsigned long long LenOfFile (FILE* file) {
 }
 
 int NumberOfStrings (char* data) {
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	assert (data);
 
 	int number_of_strings = 0;
@@ -78,12 +91,14 @@ int NumberOfStrings (char* data) {
 
 // Return 1, if char is '/0', '/n', '/r'.
 int IsFinalCharacters (char c) {
+	// deb_message(printf("IsFinalCharacters");)
 	if (c == '\n' || c == '\r' || c == '\0')
 		return 1;
 	return 0;
 }
 
 void CleaningTheTextStyle (struct Bufer* bufer) {
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	assert (bufer);
 	assert (bufer->data);
 
@@ -108,6 +123,7 @@ void CleaningTheTextStyle (struct Bufer* bufer) {
 }
 
 void FillStringsInBufer (struct Bufer* bufer) {
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	assert (bufer);
 	assert (bufer->data);
 	assert (bufer->strings);
@@ -128,6 +144,7 @@ void FillStringsInBufer (struct Bufer* bufer) {
 }
 
 void PrintSortedTextToConsole (struct Bufer* bufer) {
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	assert (bufer);
 
 	printf ("\n---------------------------------\nSorted text:\n"
@@ -139,6 +156,7 @@ void PrintSortedTextToConsole (struct Bufer* bufer) {
 }
 
 void PrintSortedTextToFile (struct Bufer* bufer, char* output_file_name) {
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	assert (bufer);
 
 	FILE* out_file = NULL;
@@ -152,11 +170,12 @@ void PrintSortedTextToFile (struct Bufer* bufer, char* output_file_name) {
 		fclose (out_file);
 	}
 	else {
-		printf ("Error in Writing");
+		printf ("Error in Writing\n");
 	}
 }
 
 void PrintRowTextToFile (struct Bufer* bufer, char* output_file_name) {
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	assert (bufer);
 	assert (bufer->data);
 
@@ -177,6 +196,7 @@ void PrintRowTextToFile (struct Bufer* bufer, char* output_file_name) {
 }
 
 void PrintRowTextToConsole (struct Bufer* bufer) {
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	assert (bufer);
 	assert (bufer->data);
 
@@ -195,6 +215,7 @@ void PrintRowTextToConsole (struct Bufer* bufer) {
 }
 
 void SortStringsAlphabet (struct Bufer* bufer, enum sorting_mode mode, int first_number, int last_number) {
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	assert (bufer);
 
 	if (first_number >= last_number) return;
@@ -221,6 +242,7 @@ void SortStringsAlphabet (struct Bufer* bufer, enum sorting_mode mode, int first
 }
 
 void SortStringsRhyme (struct Bufer* bufer, enum sorting_mode mode, int first_number, int last_number) {
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	assert (bufer);
 
 	if (first_number >= last_number) return;
@@ -247,6 +269,7 @@ void SortStringsRhyme (struct Bufer* bufer, enum sorting_mode mode, int first_nu
 }
 
 void SwapStrings (char** strings, int a, int b) {
+	deb_message(printf("SwapStrings id1 = %d, id2 = %d\n", a, b);)
 	char* tempData = 0;
 	tempData = strings[a];
 	strings[a] = strings[b];
@@ -273,6 +296,7 @@ int CompareStringsRhyme (char* string1, char* string2) {
 }
 
 void CleanFile (char* file_name) {
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	FILE* out_file = NULL;
 	out_file = fopen (file_name, "w");
 	fclose (out_file);
@@ -280,6 +304,7 @@ void CleanFile (char* file_name) {
 }
 
 void CleanMemoryOfBufer (struct Bufer *bufer) {
+	deb_message(printf(__FUNCTION__, "\n"); printf("\n");)
 	free (bufer->strings);
 	free (bufer->data);
 	free (bufer);
