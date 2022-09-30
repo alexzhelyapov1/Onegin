@@ -2,7 +2,7 @@
 
 
 int main () {
-	struct Bufer *bufer = InitBuferForFile("hamlet1.txt");
+	struct Bufer *bufer = InitBuferForFile("hamlet.txt");
 
 	CleanFile ("output.txt");
 

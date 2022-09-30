@@ -54,7 +54,7 @@ void FormatText (struct Bufer* bufer) {				// Removing extra spacing
 	while ((fast < bufer->len) && (IsFinalCharacters(data[fast]) || data[fast] == ' '))	fast++;		// Removing starting extra elements
 	while ((end >= 0) && (IsFinalCharacters(data[end]) || data[end] == ' '))	end--;		// Removing ending extra elements (need to put \0 in the end)
 
-	printf ("Fast = %d, end = %d\n", fast, end);
+	printf ("------------Fast = %d, end = %d\n", fast, end);
 	if (fast > end) {
 		data[0] = '\0';
 		return;
@@ -78,7 +78,12 @@ void FormatText (struct Bufer* bufer) {				// Removing extra spacing
 			data[low] = ' ';
 		}
 		else {
-			data[low] = data[fast];
+			if (IsFinalCharacters(data[fast])) {
+				data[low] = '\0';
+			}
+			else {
+				data[low] = data[fast];
+			}
 		}
 		low++;
 		fast++;
@@ -139,6 +144,7 @@ void FillStringsInBufer (struct Bufer* bufer) {
 	while (fast < bufer->len) {
 		if (!IsFinalCharacters (bufer->data[fast]) && IsFinalCharacters (bufer->data[low])) {
 			bufer->strings[string_number] = bufer->data + fast;
+			deb_message(printf("string detected = %s\n", bufer->data + fast));
 			string_number++;
 		}
 		low++;
@@ -223,25 +229,26 @@ void SortStringsAlphabet (struct Bufer* bufer, enum sorting_mode mode, int first
 	// deb_message(printf("Func = %s\n", __FUNCTION__);)
 	assert (bufer);
 
+	deb_message(printf("Sort alphabet str1 = %d, str2 = %d\n", first_number, last_number);)
 	if (first_number >= last_number) return;
 	int left = first_number;
 	int right = last_number;
-	int pivot = (first_number + last_number) / 2;	// Nearly middle element
+	int mid = (first_number + last_number) / 2;	// Nearly middle element
 
-	while (left >= 0 && right > 0 && right < bufer->n_strings && left < right && left <= pivot) {
-		if (CompareStrings (bufer->strings[left], bufer->strings[right]) > 0) {
-			if (mode == ASCENDING) {
-				SwapStrings (bufer->strings, left, right);
-			}
-		}
-		else if (mode == DESCENDING) {
-				SwapStrings (bufer->strings, left, right);
+	while (left <= right) {
+		while (left <= last_number && CompareStrings(bufer->strings[left], bufer->strings[mid]) < 0) left++;
+		while (right >= first_number && CompareStrings(bufer->strings[right], bufer->strings[mid]) > 0) right--;
+
+		if (left < right) {
+			SwapStrings(bufer->strings, left, right);
 		}
 		left++;
 		right--;
 	}
-	if (first_number != right) {
-		SortStringsAlphabet (bufer, mode, first_number, left);
+	if (right > first_number) {
+		SortStringsAlphabet (bufer, mode, first_number, right + 1);
+	}
+	if (left < last_number) {
 		SortStringsAlphabet (bufer, mode, left, last_number);
 	}
 }
