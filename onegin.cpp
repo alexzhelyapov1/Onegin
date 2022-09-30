@@ -49,7 +49,7 @@ void FormatText (struct Bufer* bufer) {				// Removing extra spacing
 
 	char* data = bufer->data;
 	while (fast + 1 < bufer->len) {
-		if ((IsFinalCharacters(data[fast]) || fast == 0) && (data[fast + 1] == ' ' || IsFinalCharacters(data[fast + 1])))	{		// When strings starts with tabs or it's zero string
+		if ((IsFinalCharacters(data[fast]) || (fast == 0) && (data[fast + 1] == ' ' || IsFinalCharacters(data[fast + 1])))	{		// When strings starts with tabs or it's zero string
 			while (fast + 1 < bufer->len && (data[fast + 1] == ' ' || IsFinalCharacters(data[fast + 1]))) fast++;
 		}
 		while (data[fast] == ' ' && data[fast + 1] == ' ') fast++;									// More than 1 space
