@@ -1,27 +1,24 @@
 #include "onegin.h"
-#include "tech_func_onegin.h"
 
-
-struct Bufer* InitBuferForFile (char* input_file_name) {
+struct Bufer* InitBuferForFile (const char* input_file_name) {
 	struct Bufer* bufer = (struct Bufer* ) calloc (1, sizeof (struct Bufer));
 	deb_message(printf("Allocation for buffer result = %lu.\n", sizeof(*bufer));)
 	assert(bufer);
 
 	ReadFromFile(bufer, input_file_name);
 	FormatText (bufer);
-	// deb_message(PrintRowTextToConsole(bufer));
 	NumberOfStrings (bufer);
-	bufer->strings = (char**) calloc (bufer->n_strings, sizeof (char*));
+	bufer->strings = (char**) calloc ((long unsigned int) bufer->n_strings, sizeof (char*));
 	FillStringsInBufer (bufer);
 	return bufer;
 }
 
-void ReadFromFile (struct Bufer* bufer, char* input_file_name) {
+void ReadFromFile (struct Bufer* bufer, const char* input_file_name) {
 	assert (bufer);
 
 	FILE* input_file = NULL;
 	if ((input_file = fopen (input_file_name, "rb"))) {
-		unsigned long long len = LenOfFile (input_file);
+		unsigned long len = LenOfFile (input_file);
 		bufer->len = len;
 
 		char* data = (char* ) calloc (len, sizeof(char));
@@ -43,12 +40,12 @@ void FormatText (struct Bufer* bufer) {				// Removing extra spacing
 	assert (bufer->data);
 	char* data = bufer->data;
 
-	unsigned long long low = 0;
-	unsigned long long fast = 0;
-	unsigned long long end = bufer->len - 1;
+	unsigned long low = 0;
+	unsigned long fast = 0;
+	unsigned long end = bufer->len - 1;
 
 	while ((fast < bufer->len) && (IsFinalCharacters(data[fast]) || data[fast] == ' '))	fast++;		// Removing starting extra elements
-	while ((end >= 0) && (IsFinalCharacters(data[end]) || data[end] == ' '))	end--;		// Removing ending extra elements (need to put \0 in the end)
+	while ((end > 0) && (IsFinalCharacters(data[end]) || data[end] == ' '))	end--;		// Removing ending extra elements (need to put \0 in the end)
 
 	if (fast > end) {
 		data[0] = '\0';
@@ -90,11 +87,11 @@ void FormatText (struct Bufer* bufer) {				// Removing extra spacing
 	deb_message(printf("New len of data = %lld\n", bufer->len);)
 }
 
-unsigned long long LenOfFile (FILE* file) {
+unsigned long LenOfFile (FILE* file) {
 	assert (file != NULL);
 
 	fseek (file, 0, SEEK_END);
-	unsigned long long len = ftell (file) + 1; //including in len the closing \0
+	unsigned long len = (unsigned long) ftell (file) + 1; //including in len the closing \0
 	rewind(file);
 
 	return len;
@@ -105,7 +102,7 @@ void NumberOfStrings (struct Bufer* bufer) {
 	assert(bufer->data);
 
 	int number_of_strings = 0;
-	unsigned long long i = 0;
+	unsigned long i = 0;
 	while (i < bufer->len) {
 		if (IsFinalCharacters(bufer->data[i]))
 			number_of_strings++;
@@ -129,8 +126,8 @@ void FillStringsInBufer (struct Bufer* bufer) {
 
 	bufer->strings[0] = bufer->data;
 	int string_number = 1;
-	unsigned long long low = 0;
-	unsigned long long fast = 1;
+	unsigned long low = 0;
+	unsigned long fast = 1;
 
 	while (fast < bufer->len) {
 		if (!IsFinalCharacters (bufer->data[fast]) && IsFinalCharacters (bufer->data[low])) {
@@ -142,25 +139,14 @@ void FillStringsInBufer (struct Bufer* bufer) {
 	}
 }
 
-void PrintSortedTextToConsole (struct Bufer* bufer) {
-	assert (bufer);
-
-	printf ("\n---------------------------------\nSorted text:\n"
-										"---------------------------------\n");
-
-	for (int i = 0; i < bufer->n_strings; i++) {
-		printf ("%s\n", bufer->strings[i]);
-	}
-	printf("\n");
-}
-
-void PrintSortedTextToFile (struct Bufer* bufer, char* output_file_name) {
+void PrintSortedTextToFile (struct Bufer* bufer, const char* output_file_name) {
 	assert (bufer);
 
 	FILE* out_file = NULL;
 	if ((out_file = fopen (output_file_name, "a"))) {
-		fprintf (out_file, "\n---------------------------------\nSorted text:\n"
-										"---------------------------------\n");
+		fprintf (out_file, "\n---------------------------------\n"
+		                     "Sorted text:\n"
+							 "---------------------------------\n");
 		for (int i = 0; i < bufer->n_strings; i++) {
 			fprintf (out_file, "%s\n", bufer->strings[i]);
 		}
@@ -171,14 +157,14 @@ void PrintSortedTextToFile (struct Bufer* bufer, char* output_file_name) {
 	}
 }
 
-void PrintRowTextToFile (struct Bufer* bufer, char* output_file_name) {
+void PrintRawTextToFile (struct Bufer* bufer, const char* output_file_name) {
 	assert (bufer);
 	assert (bufer->data);
 
 	FILE* out_file = fopen (output_file_name, "a");
-	fprintf (out_file, "---------------------------------\nRow Text:\n"
+	fprintf (out_file, "---------------------------------\nRaw Text:\n"
 									"---------------------------------\n");
-	unsigned long long i = 0;
+	unsigned long i = 0;
 
 	while (i < bufer->len - 1) {
 		if (bufer->data[i] == '\0' && i != bufer->len - 1)
@@ -190,25 +176,6 @@ void PrintRowTextToFile (struct Bufer* bufer, char* output_file_name) {
 	}
 	printf("\n");
 	fclose (out_file);
-}
-
-void PrintRowTextToConsole (struct Bufer* bufer) {
-	assert (bufer);
-	assert (bufer->data);
-
-	printf ("\n---------------------------------\nRow Text:\n"
-									"---------------------------------\n");
-
-	unsigned long long i = 0;
-	while (i < bufer->len) {
-		if (bufer->data[i] == '\0' && i != bufer->len - 1)
-			putchar ('\n');
-		else {
-			putchar (bufer->data[i]);
-		}
-		i++;
-	}
-	printf("\n\n");
 }
 
 void SortStringsAlphabet (struct Bufer* bufer, int first_number, int last_number) {
@@ -277,8 +244,8 @@ int CompareStrings (char* string1, char* string2) {
 }
 
 int CompareStringsRhyme (char* string1, char* string2) {
-	int i = strlen (string1) - 1;
-	int j = strlen (string2) - 1;
+	long unsigned int i = strlen (string1) - 1;
+	long unsigned int j = strlen (string2) - 1;
 	while (IsPunctuationMark(string1[i])) i--;
 	while (IsPunctuationMark(string2[j])) j--;
 	while (i > 0 && j > 0 && string1[i] == string2[j]){
@@ -289,13 +256,13 @@ int CompareStringsRhyme (char* string1, char* string2) {
 }
 
 int IsPunctuationMark (char a) {
-	if (a >= 'a' && a <= 'z' || a >= 'A' && a <= 'Z') {
+	if ((a >= 'a' && a <= 'z') || (a >= 'A' && a <= 'Z')) {
 		return 0;
 	}
 	return 1;
 }
 
-void CleanFile (char* file_name) {
+void CleanFile (const char* file_name) {
 	FILE* out_file = NULL;
 	out_file = fopen (file_name, "w");
 	fclose (out_file);

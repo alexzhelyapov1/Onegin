@@ -6,13 +6,12 @@ int main () {
 
 	CleanFile ("output.txt");
 
-	// PrintRowTextToFile (bufer, "output.txt");
-	// PrintRowTextToConsole (bufer);
-	// SortStringsAlphabet (bufer, 0, bufer->n_strings - 1);
-	SortStringsRhyme (bufer, 0, bufer->n_strings - 1);
-	// PrintSortedTextToConsole (bufer);
+	// PrintRawTextToFile (bufer, "output.txt");
+	SortStringsAlphabet (bufer, 0, bufer->n_strings - 1);
+	// SortStringsRhyme (bufer, 0, bufer->n_strings - 1);
 	PrintSortedTextToFile (bufer, "output.txt");
 	
 	CleanMemoryOfBufer (bufer);
+	IsPunctuationMark('a');
 	return 0;
 }
