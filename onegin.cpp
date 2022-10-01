@@ -3,23 +3,20 @@
 
 
 struct Bufer* InitBuferForFile (char* input_file_name) {
-	deb_message(printf("Func = %s\n", __FUNCTION__);)
 	struct Bufer* bufer = (struct Bufer* ) calloc (1, sizeof (struct Bufer));
 	deb_message(printf("Allocation for buffer result = %lu.\n", sizeof(*bufer));)
 	assert(bufer);
 
 	ReadFromFile(bufer, input_file_name);
 	FormatText (bufer);
-	deb_message(PrintRowTextToConsole(bufer));
+	// deb_message(PrintRowTextToConsole(bufer));
 	NumberOfStrings (bufer);
-	// CleaningTheTextStyle (bufer);
 	bufer->strings = (char**) calloc (bufer->n_strings, sizeof (char*));
 	FillStringsInBufer (bufer);
 	return bufer;
 }
 
 void ReadFromFile (struct Bufer* bufer, char* input_file_name) {
-	deb_message(printf("Func = %s\n", __FUNCTION__);)
 	assert (bufer);
 
 	FILE* input_file = NULL;
@@ -33,7 +30,7 @@ void ReadFromFile (struct Bufer* bufer, char* input_file_name) {
 		fread (data, sizeof (char), len, input_file);
 		deb_message(printf("Len of input = %lld, len of data = %ld\n", len, strlen(data));)
 		fclose (input_file);
-		deb_message(printf("Readed data:\n---------------------------------\n%s\n---------------------------------\n", data);)
+		// deb_message(printf("Readed data:\n---------------------------------\n%s\n---------------------------------\n", data);)
 		bufer->data = data;
 	}
 	else {
@@ -42,7 +39,6 @@ void ReadFromFile (struct Bufer* bufer, char* input_file_name) {
 }
 
 void FormatText (struct Bufer* bufer) {				// Removing extra spacing
-	deb_message(printf("Func = %s\n", __FUNCTION__);)
 	assert (bufer);
 	assert (bufer->data);
 	char* data = bufer->data;
@@ -54,7 +50,6 @@ void FormatText (struct Bufer* bufer) {				// Removing extra spacing
 	while ((fast < bufer->len) && (IsFinalCharacters(data[fast]) || data[fast] == ' '))	fast++;		// Removing starting extra elements
 	while ((end >= 0) && (IsFinalCharacters(data[end]) || data[end] == ' '))	end--;		// Removing ending extra elements (need to put \0 in the end)
 
-	// printf ("------------Fast = %d, end = %d\n", fast, end);
 	if (fast > end) {
 		data[0] = '\0';
 		return;
@@ -96,7 +91,6 @@ void FormatText (struct Bufer* bufer) {				// Removing extra spacing
 }
 
 unsigned long long LenOfFile (FILE* file) {
-	deb_message(printf("Func = %s\n", __FUNCTION__);)
 	assert (file != NULL);
 
 	fseek (file, 0, SEEK_END);
@@ -107,7 +101,6 @@ unsigned long long LenOfFile (FILE* file) {
 }
 
 void NumberOfStrings (struct Bufer* bufer) {
-	deb_message(printf("Func = %s\n", __FUNCTION__);)
 	assert (bufer);
 	assert(bufer->data);
 
@@ -124,14 +117,12 @@ void NumberOfStrings (struct Bufer* bufer) {
 
 // Return 1, if char is '/0', '/n', '/r'.
 int IsFinalCharacters (char c) {
-	// deb_message(printf("IsFinalCharacters");)
 	if (c == '\n' || c == '\r' || c == '\0')
 		return 1;
 	return 0;
 }
 
 void FillStringsInBufer (struct Bufer* bufer) {
-	deb_message(printf("Func = %s\n", __FUNCTION__);)
 	assert (bufer);
 	assert (bufer->data);
 	assert (bufer->strings);
@@ -144,7 +135,6 @@ void FillStringsInBufer (struct Bufer* bufer) {
 	while (fast < bufer->len) {
 		if (!IsFinalCharacters (bufer->data[fast]) && IsFinalCharacters (bufer->data[low])) {
 			bufer->strings[string_number] = bufer->data + fast;
-			deb_message(printf("string detected = %s\n", bufer->data + fast));
 			string_number++;
 		}
 		low++;
@@ -153,7 +143,6 @@ void FillStringsInBufer (struct Bufer* bufer) {
 }
 
 void PrintSortedTextToConsole (struct Bufer* bufer) {
-	deb_message(printf("Func = %s\n", __FUNCTION__);)
 	assert (bufer);
 
 	printf ("\n---------------------------------\nSorted text:\n"
@@ -166,7 +155,6 @@ void PrintSortedTextToConsole (struct Bufer* bufer) {
 }
 
 void PrintSortedTextToFile (struct Bufer* bufer, char* output_file_name) {
-	deb_message(printf("Func = %s\n", __FUNCTION__);)
 	assert (bufer);
 
 	FILE* out_file = NULL;
@@ -184,7 +172,6 @@ void PrintSortedTextToFile (struct Bufer* bufer, char* output_file_name) {
 }
 
 void PrintRowTextToFile (struct Bufer* bufer, char* output_file_name) {
-	deb_message(printf("Func = %s\n", __FUNCTION__);)
 	assert (bufer);
 	assert (bufer->data);
 
@@ -206,7 +193,6 @@ void PrintRowTextToFile (struct Bufer* bufer, char* output_file_name) {
 }
 
 void PrintRowTextToConsole (struct Bufer* bufer) {
-	deb_message(printf("Func = %s\n", __FUNCTION__);)
 	assert (bufer);
 	assert (bufer->data);
 
@@ -225,63 +211,56 @@ void PrintRowTextToConsole (struct Bufer* bufer) {
 	printf("\n\n");
 }
 
-void SortStringsAlphabet (struct Bufer* bufer, enum sorting_mode mode, int first_number, int last_number) {
-	// deb_message(printf("Func = %s\n", __FUNCTION__);)
+void SortStringsAlphabet (struct Bufer* bufer, int first_number, int last_number) {
 	assert (bufer);
 
-	deb_message(printf("Sort alphabet str1 = %d, str2 = %d\n", first_number, last_number);)
-	if (first_number >= last_number) return;
-	int left = first_number;
-	int right = last_number;
-	int mid = (first_number + last_number) / 2;	// Nearly middle element
-
-	while (left <= right) {
-		while (left <= last_number && CompareStrings(bufer->strings[left], bufer->strings[mid]) < 0) left++;
-		while (right >= first_number && CompareStrings(bufer->strings[right], bufer->strings[mid]) > 0) right--;
-
-		if (left < right) {
-			SwapStrings(bufer->strings, left, right);
-		}
-		left++;
-		right--;
-	}
-	if (right > first_number) {
-		SortStringsAlphabet (bufer, mode, first_number, right + 1);
-	}
-	if (left < last_number) {
-		SortStringsAlphabet (bufer, mode, left, last_number);
+	if (first_number >= 0 && first_number < last_number) {
+		int partition = FindPartitionAlphabet(bufer, first_number, last_number);
+		SortStringsAlphabet(bufer, first_number, partition - 1);
+		SortStringsAlphabet(bufer, partition + 1, last_number);
 	}
 }
 
-void SortStringsRhyme (struct Bufer* bufer, enum sorting_mode mode, int first_number, int last_number) {
-	// deb_message(printf("Func = %s\n", __FUNCTION__);)
-	assert (bufer);
-
-	if (first_number >= last_number) return;
-	int left = first_number;
+int FindPartitionAlphabet(struct Bufer* bufer, int first_number, int last_number) {
+	assert(bufer);
+	int left = first_number + 1;
 	int right = last_number;
-	int pivot = (first_number + last_number) / 2;	// Nearly middle element
-
-	while (left >= 0 && right > 0 && right < bufer->n_strings && left < right && left <= pivot) {
-		if (CompareStringsRhyme (bufer->strings[left], bufer->strings[right]) > 0) {
-			if (mode == ASCENDING) {
-				SwapStrings (bufer->strings, left, right);
-			}
+	while (true) {
+		while (left < right && CompareStrings(bufer->strings[left], bufer->strings[first_number]) <= 0) left++;
+		while (right > left && CompareStrings(bufer->strings[right], bufer->strings[first_number]) > 0) right--;
+		if (left >= right){
+			SwapStrings(bufer->strings, first_number, left - 1);
+			return left - 1;
 		}
-		else if (mode == DESCENDING) {
-				SwapStrings (bufer->strings, left, right);
-		}
-		left++;
-		right--;
+		SwapStrings(bufer->strings, left, right);
 	}
-	if (first_number != right) {
-		SortStringsRhyme (bufer, mode, first_number, left);
-		SortStringsRhyme (bufer, mode, left, last_number);
+}
+
+void SortStringsRhyme (struct Bufer* bufer, int first_number, int last_number) {
+	assert(bufer);
+	if (first_number >= 0 && first_number < last_number) {
+		int partition = FindPartitionRhyme(bufer, first_number, last_number);
+		SortStringsRhyme(bufer, first_number, partition - 1);
+		SortStringsRhyme(bufer, partition + 1, last_number);
+	}
+}
+
+int FindPartitionRhyme(struct Bufer* bufer, int first_number, int last_number) {
+	assert(bufer);
+	int left = first_number + 1;
+	int right = last_number;
+	while (true) {
+		while (left < right && CompareStringsRhyme(bufer->strings[left], bufer->strings[first_number]) <= 0) left++;
+		while (right > left && CompareStringsRhyme(bufer->strings[right], bufer->strings[first_number]) > 0) right--;
+		if (left >= right){
+			SwapStrings(bufer->strings, first_number, left - 1);
+			return left - 1;
+		}
+		SwapStrings(bufer->strings, left, right);
 	}
 }
 
 void SwapStrings (char** strings, int a, int b) {
-	deb_message(printf("SwapStrings id1 = %d, id2 = %d\n", a, b);)
 	char* tempData = 0;
 	tempData = strings[a];
 	strings[a] = strings[b];
@@ -302,7 +281,7 @@ int CompareStringsRhyme (char* string1, char* string2) {
 	int j = strlen (string2) - 1;
 	while (IsPunctuationMark(string1[i])) i--;
 	while (IsPunctuationMark(string2[j])) j--;
-	while (i > 0 && j > 0 && string1[i] == string2[i]){
+	while (i > 0 && j > 0 && string1[i] == string2[j]){
 		i--;
 		j--;
 	}
@@ -310,14 +289,13 @@ int CompareStringsRhyme (char* string1, char* string2) {
 }
 
 int IsPunctuationMark (char a) {
-	if (a < 'A' || a > 'z') {
-		return 1;
+	if (a >= 'a' && a <= 'z' || a >= 'A' && a <= 'Z') {
+		return 0;
 	}
-	return 0;
+	return 1;
 }
 
 void CleanFile (char* file_name) {
-	deb_message(printf("Func = %s\n", __FUNCTION__);)
 	FILE* out_file = NULL;
 	out_file = fopen (file_name, "w");
 	fclose (out_file);
@@ -325,8 +303,8 @@ void CleanFile (char* file_name) {
 }
 
 void CleanMemoryOfBufer (struct Bufer *bufer) {
-	deb_message(printf("Func = %s\n", __FUNCTION__);)
 	free (bufer->strings);
 	free (bufer->data);
 	free (bufer);
+	deb_message(printf("End of programm\n");)
 }

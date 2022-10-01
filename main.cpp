@@ -8,8 +8,8 @@ int main () {
 
 	// PrintRowTextToFile (bufer, "output.txt");
 	// PrintRowTextToConsole (bufer);
-	SortStringsAlphabet (bufer, ASCENDING, 0, bufer->n_strings - 1);
-	// SortStringsRhyme (bufer, ASCENDING, 0, bufer->n_strings - 1);
+	// SortStringsAlphabet (bufer, 0, bufer->n_strings - 1);
+	SortStringsRhyme (bufer, 0, bufer->n_strings - 1);
 	// PrintSortedTextToConsole (bufer);
 	PrintSortedTextToFile (bufer, "output.txt");
 	
