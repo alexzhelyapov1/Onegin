@@ -1,7 +1,9 @@
 BUILD_DIR := build
 BIN_DIR := bin
 
-APPLICATION := $(BUILD_DIR)/onegin
+SRC_DIRS := . src
+VPATH += $(SRC_DIRS)
+APPLICATION := $(BUILD_DIR)/Onegin
 
 CXX := g++
 CXX_FLAGS := -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Waggressive-loop-optimizations\
@@ -17,7 +19,7 @@ CXX_FLAGS := -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Waggressive
 
 all: prepare $(APPLICATION)
 
-$(APPLICATION): $(BIN_DIR)/main.o $(BIN_DIR)/onegin.o
+$(APPLICATION): $(BIN_DIR)/main.o $(BIN_DIR)/stack.o $(BIN_DIR)/test.o
 	$(CXX) $^ -o $@ $(CXX_FLAGS)
 
 $(BIN_DIR)/%.o: %.cpp
@@ -35,3 +37,4 @@ prepare:
 clean:
 	rm -rf $(BIN_DIR)
 	rm -rf $(BUILD_DIR)
+	
